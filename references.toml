@@ -1,0 +1,112 @@
+[references.AGIC]
+language = "en"
+year = 2022
+title = "{AGIC}: Approximate Gradient Inversion Attack on Federated Learning"
+venue = "2022 41st International Symposium on Reliable Distributed Systems (SRDS)"
+pages = "12-22"
+doi = "10.1109/SRDS55811.2022.00012"
+authors = [
+  { family = "Xu", given = "Jin" },
+  { family = "Hong", given = "Chi" },
+  { family = "Huang", given = "Jiyue" },
+  { family = "Chen", given = "Lydia Y." },
+  { family = "Decouchant", given = "Jérémie" },
+]
+
+[references.cpa]
+language = "en"
+year = 2023
+title = "Cocktail Party Attack: Breaking Aggregation-Based Privacy in Federated Learning Using Independent Component Analysis"
+venue = "Proceedings of the 40th International Conference on Machine Learning, PMLR 202"
+publisher = "PMLR"
+collection = "Proceedings of Machine Learning Research"
+pages = "15884-15899"
+url = "https://proceedings.mlr.press/v202/kariyappa23a.html"
+authors = [
+  { family = "Kariyappa", given = "Sanjay" },
+  { family = "Guo", given = "Chuan" },
+  { family = "Maeng", given = "Kiwan" },
+  { family = "Xiong", given = "Wenjie" },
+  { family = "Suh", given = "G. Edward" },
+  { family = "Qureshi", given = "Moinuddin K." },
+  { family = "Lee", given = "Hsien-Hsin S." },
+]
+
+[references."guo2026gradient-inversion"]
+language = "en"
+year = 2026
+title = "Exploring the Vulnerabilities of Federated Learning: A Deep Dive Into Gradient Inversion Attacks"
+venue = "IEEE Transactions on Pattern Analysis and Machine Intelligence, 48(4)"
+pages = "4810-4826"
+doi = "10.1109/TPAMI.2025.3646639"
+authors = [
+  { family = "Guo", given = "Pengxin" },
+  { family = "Wang", given = "Runxi" },
+  { family = "Zeng", given = "Shuang" },
+  { family = "Zhu", given = "Jinjing" },
+  { family = "Jiang", given = "Haoning" },
+  { family = "Wang", given = "Yanran" },
+  { family = "Zhou", given = "Yuyin" },
+  { family = "Wang", given = "Feifei" },
+  { family = "Xiong", given = "Hui" },
+  { family = "Qu", given = "Liangqiong" },
+]
+
+[references.du2025sok]
+language = "en"
+year = 2025
+month = 8
+title = "SoK: On Gradient Leakage in Federated Learning"
+venue = "34th USENIX Security Symposium (USENIX Security 25)"
+publisher = "USENIX Association"
+location = "Seattle, WA"
+pages = "3045-3064"
+isbn = "978-1-939133-52-6"
+authors = [
+  { family = "Du", given = "Jiacheng" },
+  { family = "Hu", given = "Jiahui" },
+  { family = "Wang", given = "Zhibo" },
+  { family = "Sun", given = "Peng" },
+  { family = "Gong", given = "Neil" },
+  { family = "Ren", given = "Kui" },
+  { family = "Chen", given = "Chun" },
+]
+
+[references.ma2023iLRG]
+language = "en"
+year = 2023
+title = "Instance-wise Batch Label Restoration via Gradients in Federated Learning"
+venue = "The Eleventh International Conference on Learning Representations (ICLR 2023)"
+url = "https://openreview.net/forum?id=FIrQfNSOoTr"
+authors = [
+  { family = "Ma", given = "Kailang" },
+  { family = "Sun", given = "Yu" },
+  { family = "Cui", given = "Jian" },
+  { family = "Li", given = "Dawei" },
+  { family = "Guan", given = "Zhenyu" },
+  { family = "Liu", given = "Jianwei" },
+]
+
+[references.zhu2023sme]
+language = "en"
+year = 2023
+title = "Surrogate Model Extension (SME): A Fast and Accurate Weight Update Attack on Federated Learning"
+venue = "Proceedings of the 40th International Conference on Machine Learning, PMLR 202"
+url = "https://proceedings.mlr.press/v202/zhu23m.html"
+authors = [
+  { family = "Zhu", given = "Junyi" },
+  { family = "Yao", given = "Ruicong" },
+  { family = "Blaschko", given = "Matthew B." },
+]
+
+[references.sample]
+language = "ja"
+year = 2023
+title = "猫との対話に関する舌運動の影響について"
+venue = "Proceedings of the 40th International Conference on Machine Learning, PMLR 202"
+url = "https://proceedings.mlr.press/v202/zhu23m.html"
+authors = [
+  { family = "山田", given = "太郎" },
+  { family = "佐藤", given = "二郎" },
+  { family = "Blaschko", given = "Matthew B." },
+]
