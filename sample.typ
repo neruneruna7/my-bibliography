@@ -4,8 +4,13 @@
 #show: setup
 
 = Test
-@AGIC @cpa @du2025sok
 
-@du2025sok
+
+
+@bib:du2025sok[p. 42]
+
+#cite(<bib:du2025sok>, supplement: [p. 42], form: "author")
+
 
 #bibliography("references.toml")
+
