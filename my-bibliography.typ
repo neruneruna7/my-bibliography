@@ -19,12 +19,12 @@
 // 特に指定しない場合，デフォルトの表示が適用される．
 
 // 公開 API の使用例:
-// #import "my-bibliography.typ": bibliography, cite, setup
-// #import "style.typ": style
-// #show: setup
-// @bib:du2025sok[p. 42]
-// #cite(<bib:du2025sok>, form: "author")
-// #bibliography("references.toml", style: style)
+// `#import "my-bibliography.typ": bibliography, cite, setup`
+// `#import "style.typ": style`
+// `#show: setup`
+// `@bib:du2025sok[p. 42]`
+// `#cite(<bib:du2025sok>, form: "author")`
+// `#bibliography("references.toml", style: style)`
 #import "default-style.typ": default-style
 
 // TOML のキー `key` に対応する Typst label を `bib:key` とする。
@@ -56,6 +56,8 @@
 
 // 採番、引用済み状態の更新、style.cite の呼び出し、文献一覧へのリンクを行う。
 // `cite` と `route-reference` から呼び出す内部関数である。
+// 型契約: render-citation(record: dictionary, key: str, supplement: none | content,
+//                          form: str, style: auto | str | path | bytes) -> content
 // 使用例（内部）: render-citation(record, record.key, none, "normal", auto)
 #let render-citation(record, key, supplement, form, style) = context {
   let history = cited-keys.get()
@@ -79,17 +81,38 @@
   [#update #link(label(reference-prefix + key), rendered)]
 }
 
-// 指定した文献を本文中に表示する。`key` は `bib:` prefix を含む label で指定する。
-// `supplement` はページ番号など、`form` は引用形式、`style` は renderer に渡す補助情報である。
-// 使用例:
-// #cite(<bib:du2025sok>)
-// #cite(<bib:du2025sok>, supplement: [p. 42], form: "author")
+/// 文献キーを本文中の引用として表示する。キーは `bib:` prefix 付きの label で指定する。
+/// - 例: `#cite(<bib:du2025sok>)`。
+/// - 補足付きは `#cite(<bib:du2025sok>, supplement: [p. 42])`。
+/// - key (label): TOML のキーに `bib:` を付けた label。例は `<bib:du2025sok>`。
+/// - supplement (content, none): ページ番号などの補足。省略時は `none`。
+/// - form (str): `normal`, `prose`, `full`, `author`, `year`, `none` のいずれか。
+/// - style (any): `auto`, 文字列、path、bytes のいずれか。現在は renderer に渡すだけである。
+/// -> content
 #let cite(
   key,
   supplement: none,
   form: "normal",
   style: auto,
 ) = context {
+  assert(type(key) == label, message: "key must be a label such as <bib:article>")
+  assert(
+    supplement == none or type(supplement) == content,
+    message: "supplement must be none or content",
+  )
+  assert(
+    form in ("normal", "prose", "full", "author", "year", "none"),
+    message: "form must be normal, prose, full, author, year, or none",
+  )
+  let citation-style-type = type(style)
+  assert(
+    style == auto
+      or citation-style-type == str
+      or citation-style-type == path
+      or citation-style-type == bytes,
+    message: "style must be auto, str, path, or bytes",
+  )
+
   let reference-label = str(key)
   assert(
     reference-label.starts-with(reference-prefix),
@@ -106,6 +129,7 @@
 }
 
 // `ref` 要素を独自文献へ振り分ける。`bib:` label 以外は元の ref 要素へ戻す。
+// 型契約: route-reference(element: content) -> content
 // 使用例: `setup` が show rule として登録するため、利用側では `#show: setup` と書く。
 #let route-reference(element) = context {
   let reference-label = str(element.target)
@@ -134,10 +158,10 @@
   }
 }
 
-// 文書全体の ref show rule を設定し、`@bib:key` を独自 cite 処理へ送る。
-// 使用例:
-// #show: setup
-// @bib:du2025sok
+/// 文書内の `@bib:key` を独自の `cite` 処理へ送る show rule を設定する。
+/// 利用例: 文書の先頭で `#show: setup` を指定する。
+/// - body (content): show rule が受け取る文書本文。
+/// -> content
 #let setup(body) = {
   show ref: route-reference
   body
@@ -145,6 +169,7 @@
 
 // TOML の全キーについて、補完と citation query に使う metadata と label を登録する。
 // bibliography() が呼び出す内部関数である。
+// 型契約: register-reference-labels(references: dictionary, renderer: dictionary) -> content
 // 使用例（内部）: register-reference-labels(references, renderer)
 #let register-reference-labels(references, renderer) = {
   for key in references.keys() {
@@ -161,15 +186,25 @@
   }
 }
 
-// TOML を読み込み、文献 label を登録して参考文献一覧を生成する。
-// `full: false` は引用済み文献のみ、`full: true` は TOML の全項目を表示する。
-// `style: auto` は default-style を使い、明示した場合は `cite` / `entry` renderer を使う。
-// 使用例:
-// #import "my-bibliography.typ": bibliography, cite, setup
-// #import "style.typ": style
-// #show: setup
-// 
-// #bibliography("references.toml", title: none, style: style)
+/// 参考文献管理関数 
+/// TOMLファイルを読み込む．
+/// 
+/// 表示をカスタマイズする場合は，style関数に与える
+/// 
+/// 使用例: 
+/// ```
+/// #import "my-bibliography.typ": bibliography, cite, setup
+/// #import "style.typ": style
+/// #show: setup
+/// #bibliography("references.toml", title: none, style: style)
+/// ```
+/// - sources (any): `[references.*]` テーブルを持つ単一の TOML ファイル。文字列または path を渡す。
+/// - title (auto, content, none): `auto` は文書言語に応じた見出し、`none` は見出しなし、content は指定見出し。
+/// - full (bool): `false` は引用済み文献のみ、`true` は TOML 内の全文献を表示する。
+/// - style (auto, dictionary): `auto` は既定 style。辞書では `cite` と `entry` に renderer 関数を指定する。
+/// - target (any): 標準 bibliography に寄せた予約引数。現在は振り分けに使わない。
+/// - group (auto, none, str): 標準 bibliography に寄せた予約引数。現在は採番に使わない。
+/// -> content
 #let bibliography(
   sources,
   title: auto,
@@ -178,15 +213,46 @@
   target: auto,
   group: auto,
 ) = {
-  assert(type(sources) == str, message: "sources must be a TOML file path")
+  let sources-type = type(sources)
+  assert(
+    sources-type == str or sources-type == path,
+    message: "sources must be a TOML file path as str or path",
+  )
+  assert(
+    title == auto or title == none or type(title) == content,
+    message: "title must be auto, none, or content",
+  )
   assert(type(full) == bool, message: "full must be a boolean")
+  assert(
+    style == auto or type(style) == dictionary,
+    message: "style must be auto or a renderer dictionary",
+  )
+  assert(
+    group == auto or group == none or type(group) == str,
+    message: "group must be auto, none, or str",
+  )
+  let target-type = type(target)
+  assert(
+    target == auto
+      or target-type == function
+      or target-type == label
+      or target-type == location
+      or target-type == selector,
+    message: "target must be auto, function, label, location, or selector",
+  )
 
   let document = toml(sources)
   assert("references" in document, message: "TOML must contain [references.*] tables")
   let references = document.references
   let renderer = if style == auto { default-style } else { style }
-  assert("cite" in renderer, message: "style.cite is required")
-  assert("entry" in renderer, message: "style.entry is required")
+  assert(
+    "cite" in renderer and type(renderer.cite) == function,
+    message: "style.cite must be a function (entry, ctx) -> content",
+  )
+  assert(
+    "entry" in renderer and type(renderer.entry) == function,
+    message: "style.entry must be a function (entry, ctx) -> content",
+  )
 
   let manifest = metadata((
     kind: "custom-bibliography",
